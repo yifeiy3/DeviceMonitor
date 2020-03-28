@@ -21,7 +21,7 @@ And each time the app tries to change the state of the device, add the following
 ```
 Example:
 ```
-    monitor?.execute("AppName: Big Turn ON, ($switch1 switch : on, $switches2 switch : off)")
+    monitor?.execute("AppName: Big Turn ON, (switch1 switch : on, switch2 switch : off)")
 ```
 The state name and possible value of states can be obtained through the attribute description of each device capability specified in the preference section.(Our monitor has capability execute) and can be found here: https://docs.smartthings.com/en/latest/capabilities-reference.html
 
