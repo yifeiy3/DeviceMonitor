@@ -2,7 +2,6 @@
 Simple device monitor for Samsung SmartThings to check for anomalous behaviors at runtime
 
 ## Requirements
-____________
 To run, first log on to Samsung Smartthings IDE, create new device handler `monitor` under
 `My Device Handler` with `DeviceHandler.groovy`
 
@@ -27,7 +26,6 @@ Example:
 The state name and possible value of states can be obtained through the attribute description of each device capability specified in the preference section.(Our monitor has capability execute) and can be found here: https://docs.smartthings.com/en/latest/capabilities-reference.html
 
 ## Running Monitor
-____
 To run our monitor, first click `simulate` on the monitor app and add all the devices in the system to their corresponding attributes/capabilities. On the bottom of the simulation window, there should be an `API Key` and `API Endpoint`.
 
 Under `getlog.py`, change the `API Key` and `API Endpoint` correspondingly and add any important devices in the system that you want to be alarmed if any state change for them happens to the `important` field.
@@ -35,5 +33,4 @@ Under `getlog.py`, change the `API Key` and `API Endpoint` correspondingly and a
 Then, running `python3 getlog.py` should output an analysis file under the `output path` specified in the file.
 
 ## Analysis Details
-___
 In our analysis file, we are tracking all the direct conflicts happened in the system, which are state changes of a single device that occurs within a very short amount of time. We also kept track of the last five actions in the system before any important device performs a state change. Finally, we check the difference between actual device states to what is described in our monitor to see if there is any discrepancies in them.
