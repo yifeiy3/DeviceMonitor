@@ -222,15 +222,28 @@ def handlerThings() {
  */
 def handlerEvents() {
 	def resp = []
-    resp << getThing(params.id).events(max: params.max).collect([]) {[
-        id:          it.id.toString(),
+    def since
+   
+    if(params.since){
+        //since = new Date(Math.round(params.since.toFloat() * 1000))
+       	since = Date.parse("yyyy-mm-dd hh:mm:ss.SSS", params.since)
+    } else {
+        since = new Date() -7
+    }
+    
+    resp << getThing(params.id).eventsSince(since, [max: params.max]).collect([]) {[
+        //id:          it.id.toString(),
+        device:		 it.device,
+        source:		 it.source,
         date:        it.date,
         deviceId:    it.deviceId,
         name:        it.name,
-        unit:        it.unit,
+        //unit:        it.unit,
         stringValue: it.stringValue,
+        desc:		 it.descriptionText
     ]}
-    return resp
+    def respp = resp[0].reverse()
+    return respp
 }
 
 
@@ -250,7 +263,8 @@ def handlerStates(){
     def resp = []
     log.debug "handlerStates().params.since: ${params.since}"
     if(params.since){
-        since = new Date(Math.round(params.since.toFloat() * 1000))
+        //since = new Date(Math.round(params.since.toFloat() * 1000))
+       	since = Date.parse("yyyy-mm-dd hh:mm:ss.SSS", params.since)
     } else {
         since = new Date() -7
     }
@@ -263,6 +277,7 @@ def handlerStates(){
         date:  it.date,
         value: it.value,
     ]}
-    return resp
+    def respp = resp[0].reverse()
+    return respp
 }
 
