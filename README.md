@@ -2,35 +2,34 @@
 Simple device monitor for Samsung SmartThings to check for anomalous behaviors at runtime
 
 ## Requirements
-To run, first log on to Samsung Smartthings IDE, create new device handler `monitor` under
-`My Device Handler` with `DeviceHandler.groovy`
-
-Under `My Devices`, create a new device called `Monitor Device` of type `monitor`
 
 Under `My SmartApp`, create a monitor app with `MonitorApp.groovy`. Go to smartapp settings to make sure Oauth is enabled. You can change the attributes for devices asked in the preference section to adjust more to your need.
 
-For each app that you want to monitor, add the following code to its source code in your environment under the preference section.
+For example, to add devices of the switch capability to the system, simply add following under preference section:
 ```
-    section("Monitor the app using..."){
-    	input "monitor", "capability.execute", required:false
-    }
+section ("Switch access") {
+    input "switches",
+        "capability.switch",
+        title: "Switch",
+        multiple: true,
+        required: false
+}
 ```
-And each time the app tries to change the state of the device, add the following code before state change to send information to the monitor.
-```
-    monitor?.execute("AppName: $Appname, ($DeviceName $Devicestate : $value, ...)")
-```
-Example:
-```
-    monitor?.execute("AppName: Big Turn ON, (switch1 switch : on, switch2 switch : off)")
-```
-The state name and possible value of states can be obtained through the attribute description of each device capability specified in the preference section.(Our monitor has capability execute) and can be found here: https://docs.smartthings.com/en/latest/capabilities-reference.html
+The capability.switch indicate you are adding a switch object for monitor to keep track of. For more information on the supported capabilities for devices, visit: https://docs.smartthings.com/en/latest/capabilities-reference.html
 
-## Running Monitor
-To run our monitor, first click `simulate` on the monitor app and add all the devices in the system to their corresponding attributes/capabilities. On the bottom of the simulation window, there should be an `API Key` and `API Endpoint`.
 
-Under `getlog.py`, change the `API Key` and `API Endpoint` correspondingly and add any important devices in the system that you want to be alarmed if any state change for them happens to the `important` field.
+## Running Analysis
+To run our monitor for analysis, first click `simulate` on the monitor app and add all the devices in the system to their corresponding attributes/capabilities. On the bottom of the simulation window, there should be an `API Key` and `API Endpoint`.
 
-Then, running `python3 getlog.py` should output an analysis file under the `output path` specified in the file.
+Under `getlog.py`, change the `API Key` and `API Endpoint` correspondingly and add any important devices in the system that you want to be alarmed if any state change for them happens to the `important` field. The `since` field can be changed accordingly to the earliest event you want to monitor, the default None looks at past seven days of events.
+
+Finally, running `python3 getlog.py` should output an analysis file under the `output path` specified in the file.
+
+## Obtaining device information only
+To obtain the events, states, and all devices in the system without doing the analysis, run the monitor on Samsung IDE similar to before. Then, follow the steps in `test.py` to obtain all the info through the structure we used to communicate to the monitor on Samsung hub.
 
 ## Analysis Details
-In our analysis file, we are tracking all the direct conflicts happened in the system, which are state changes of a single device that occurs within a very short amount of time. We also kept track of the last five actions in the system before any important device performs a state change. Finally, we check the difference between actual device states to what is described in our monitor to see if there is any discrepancies in them.
+In our analysis file, we are tracking all the direct conflicts happened in the system, which are state changes of a single device that occurs within a very short amount of time. We distinguished the bad direct conflicts, which are the conflicts that actually caused a confusion of state, such as an app is called before the app before finishes execution. We also kept track of the last five actions in the system before any important device performs a state change. 
+
+## Future Goals
+We are still under implementation for indirect conflict analysis, which are two apps may have conflicting interests such as one turn on AC while another turn on heater at the same time. Also, `Devicehandler.groovy` contains our ongoing effort to build a virtual monitor device that is able to interrupt or handle when abnormal behavior occurs.
