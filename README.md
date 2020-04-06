@@ -25,7 +25,7 @@ Under `getlog.py`, change the `API Key` and `API Endpoint` correspondingly and a
 
 Finally, running `python3 getlog.py` should output an analysis file under the `output path` specified in the file.
 
-## Obtaining device information only
+## Obtaining Device Information Only
 To obtain the events, states, and all devices in the system without doing the analysis, run the monitor on Samsung IDE similar to before. Then, follow the steps in `test.py` to obtain all the info through the structure we used to communicate to the monitor on Samsung hub.
 
 ## Analysis Details
