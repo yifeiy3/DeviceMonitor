@@ -26,9 +26,11 @@ class Monitor():
                 "state":stateName,
                 "thing_id":thing_id,
                 "since":since}
-        return self._retrieveInfo(param)[0]
+        return self._retrieveInfo(param)
     
-    def getEvents(self, thing_id):
+    def getEvents(self, thing_id, max_evts=1000, since=None):
         param = {"function":"events",
-            "thing_id":thing_id}
+            "max":max_evts,
+            "since":since,
+            "id":thing_id}
         return self._retrieveInfo(param)
