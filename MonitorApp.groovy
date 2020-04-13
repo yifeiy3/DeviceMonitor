@@ -86,6 +86,27 @@ preferences {
         multiple: true,
         required: false
   }
+  section ("Smart Kitchenware"){
+  	input "oven",
+        "capability.ovenOperatingState",
+         title: "Smart Oven",
+         multple:true,
+         required:false
+  }
+  section ("Alarms"){
+  	input "alarms",
+    	"capability.alarm",
+        title: "Alarms in the house",
+        multiple:true,
+        required:false
+  }
+  section ("Smart security system"){
+  	input "locks",
+    	"capability.lock",
+        title: "locks in the house",
+        multiple: true,
+        required:false
+  }
 }
 
 mappings {
@@ -127,6 +148,10 @@ def getThings(kind){
             things += thermostats       ?: []
             things += switches          ?: []
             things += switchesLevel     ?: []
+            things += oven				?: []
+            things += alarms			?: []
+            things += locks				?: []
+            
             // remove things that were selected in multiple sections
             def thingComparator = [
                 equals: { delegate.equals(it) },
@@ -155,6 +180,12 @@ def getThings(kind){
             return switches          ?: []
         case "switchLevel":
             return switchesLevel     ?: []
+        case "oven":
+        	return oven				 ?:	[]
+        case "alarms":
+        	return alarms			 ?:	[]
+        case "locks":
+        	return locks			 ?:	[]
     }
     log.debug( /getThings() called with invalid kind "$kind"/ )
 }
@@ -280,4 +311,3 @@ def handlerStates(){
     def respp = resp[0].reverse()
     return respp
 }
-
