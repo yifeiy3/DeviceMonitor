@@ -2,7 +2,7 @@ import json
 import re
 import getDeviceInfo as gd
 
-stdattrribute = ['healthStatus', 'DeviceWatch-DeviceStatus', 'DeviceWatch-Enroll']
+stdattrribute = ['healthStatus', 'DeviceWatch-DeviceStatus', 'DeviceWatch-Enroll', 'versionNumber', 'battery']
 
 def getJsonState(jsondata):
     '''
@@ -50,6 +50,7 @@ class Objects():
         self.states = objstates
         self.sysevts = []
         self.appevts = []
+        self.sysst = {}
     
     def checksum(self):
         '''
@@ -57,11 +58,10 @@ class Objects():
             should always be consistent but check to be sure
         '''
         diff = []
-        sysst = {}
         for items in self.sysevts:
-            addOrReplace(sysst, items[3], items[4], items[5], repeat = True)
-        for keys in sysst:
-            vals = sysst[keys][0]
+            addOrReplace(self.sysst, items[3], items[4], items[5], repeat = True)
+        for keys in self.sysst:
+            vals = self.sysst[keys][0]
             gt = self.states[keys] #a list of (date ,state value)
             if(len(vals) != len(gt)):
                 diff.append((self.name, keys))
@@ -103,13 +103,18 @@ class Analysis():
             #     continue
             itemid = it["id"]
             attributes = {}
-            for caps in it["capabilities"]:
-                for c in caps["attributes"]:
-                    if c not in stdattrribute:
-                        attributes[c] = getJsonState(self.mr.getStates(c, itemid, since))
             itt = Objects(itemid, it["name"], attributes)
             self.items[it["name"]] = itt
-    
+
+    def _loadStates(self, tobject, modifiedStates, since=None):
+        '''
+            only loads in the necessary states that is changed.
+        '''
+        attributes = {}
+        for states in modifiedStates:
+            attributes[states] = getJsonState(self.mr.getStates(states, tobject.id, since))
+        tobject.states = attributes
+
     def _loadEvts(self, tobject, jsondata, since=None):
         '''
             load the events for each object from the event log in our monitor
@@ -125,6 +130,8 @@ class Analysis():
         sysevts = []
         appevts = []
         conflicts = []
+        changedStates = []
+
         prev = ("", "", "", "", "", "")
         obj = self.items[tobject]
         for it in jsondata:
@@ -134,8 +141,13 @@ class Analysis():
             if cmdtype == "DEVICE":
                 desc = it["desc"] #desc pattern: ($deviceName) ($deviceState) is ($statevalue)
                 gp, val = re.findall(r'(^.*)(?=is)|(?<=is)\s+(.*)', desc)
-                stval = val[1]
-                stname = gp[0][:-1].rsplit(' ', 1)[1]
+                stval = stval = val[1]
+                stname = it["name"]
+                if stname in stdattrribute:
+                    continue
+                if stname not in changedStates:
+                    changedStates.append(stname)
+
                 nprev = (date, cmdtype, None, stname, stval, tobject)
                     #(date, commandtype, appname, statebeingchanged, newvalue, objname)
 
@@ -170,7 +182,7 @@ class Analysis():
 
         obj.sysevts = sysevts
         obj.appevts = appevts
-        return sysevts, appevts, conflicts
+        return sysevts, appevts, conflicts, changedStates
     
     def _dfs(self, edges):
         '''
@@ -279,7 +291,8 @@ class Analysis():
         for objname in self.items:
             obj = self.items[objname]
             evtjson = self.mr.getEvents(obj.id, since = since)
-            sys, app, conf = self._loadEvts(objname, evtjson, since)
+            sys, app, conf, modstates = self._loadEvts(objname, evtjson, since)
+            self._loadStates(obj, modstates, since)
             allevt = allevt + sys + app
             self.find_conf(obj.name, bc, conf)
             diff = diff + obj.checksum()
@@ -315,10 +328,10 @@ class Analysis():
     
     def _backtrace(self, idx):
         '''
-            obtain the last 5 eventsthat happenns before the change of important item
+            obtain the last 6 eventsthat happenns before the change of important item
         '''
         res = []
-        start = max(0, idx-4)
+        start = max(0, idx-5)
         for i in range(start, idx+1):
             res.append(self.allevts[i])
         return res
@@ -374,10 +387,15 @@ class Analysis():
                             outfile.write("\t\t\tApp: " + tt[2] + " changes " + tt[5] + " with " + tt[4] + "command\n")
                         else:
                             outfile.write("\t\t\tDevice: " + tt[5] + "'s " + tt[3] + " state changes to " + tt[4] + "\n")
-            if differ:
+            if differ:  #This should not happen, for debug purposes.
                 outfile.write("Discrepant States: \n")
                 for name, state in differ:
-                    outfile.write("\tDeviceName: " + name + " Device State:" + state + "\n")
+                    outfile.write("\tDeviceName: " + name + " Device State: " + state + "\n")
+                    obj = self.items[name]
+                    for it in obj.states[state]:
+                        outfile.write("\t\tState:" + it[1] + "\n")
+                    for evt in obj.sysst[state][0]:
+                        outfile.write("\t\tEvent:" + evt + "\n")
             
 
 

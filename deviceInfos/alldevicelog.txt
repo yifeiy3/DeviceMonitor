@@ -1,0 +1,82 @@
+All direct conflicts from monitor: 
+All the direct conflicts causes devices to change states abnormally: 
+All the indirect conflicts: 
+All the important device change log: 
+	Object:Door
+		Change Number: 0
+			App: Oven and Smokealarm changes Oven with setMachineStatecommand
+			App: Oven and Smokealarm changes Smoke Alarm with sirencommand
+			Device: Smoke Alarm's alarm state changes to siren
+			Device: Door's lock state changes to unlocked
+			Device: Door's lock state changes to locked
+			App: Opens door when smoke detected changes Door with unlockcommand
+		Change Number: 1
+			Device: Door's lock state changes to unlocked
+			Device: Door's lock state changes to locked
+			App: Opens door when smoke detected changes Door with unlockcommand
+			Device: Door's lock state changes to unlocked
+			Device: Door's lock state changes to locked
+			App: Opens door when smoke detected changes Door with unlockcommand
+		Change Number: 2
+			App: Opens door when smoke detected changes Door with unlockcommand
+			Device: Door's lock state changes to unlocked
+			Device: Door's lock state changes to locked
+			App: Opens door when smoke detected changes Door with unlockcommand
+			Device: Door's lock state changes to unlocked
+			App: Opens door when smoke detected changes Door with unlockcommand
+		Change Number: 3
+			Device: Door's lock state changes to unlocked
+			Device: Door's lock state changes to locked
+			App: Opens door when smoke detected changes Door with unlockcommand
+			Device: Door's lock state changes to unlocked
+			App: Opens door when smoke detected changes Door with unlockcommand
+			App: Opens door when smoke detected changes Door with unlockcommand
+		Change Number: 4
+			Device: Door's lock state changes to locked
+			App: Opens door when smoke detected changes Door with unlockcommand
+			Device: Door's lock state changes to unlocked
+			App: Opens door when smoke detected changes Door with unlockcommand
+			App: Opens door when smoke detected changes Door with unlockcommand
+			App: Opens door when smoke detected changes Door with unlockcommand
+		Change Number: 5
+			App: Opens door when smoke detected changes Door with unlockcommand
+			Device: Door's lock state changes to unlocked
+			App: Opens door when smoke detected changes Door with unlockcommand
+			App: Opens door when smoke detected changes Door with unlockcommand
+			App: Opens door when smoke detected changes Door with unlockcommand
+			App: Opens door when smoke detected changes Door with unlockcommand
+		Change Number: 6
+			App: Opens door when smoke detected changes Door with unlockcommand
+			App: Opens door when smoke detected changes Door with unlockcommand
+			App: Opens door when smoke detected changes Door with unlockcommand
+			App: Opens door when smoke detected changes Door with unlockcommand
+			Device: Smoke Alarm's alarm state changes to off
+			App: Opens door when smoke detected changes Door with unlockcommand
+		Change Number: 7
+			App: Opens door when smoke detected changes Door with unlockcommand
+			Device: Smoke Alarm's alarm state changes to off
+			App: Opens door when smoke detected changes Door with unlockcommand
+			Device: Smoke Alarm's alarm state changes to both
+			Device: Smoke Alarm's alarm state changes to off
+			App: Opens door when smoke detected changes Door with unlockcommand
+		Change Number: 8
+			Device: Smoke Alarm's alarm state changes to off
+			App: Opens door when smoke detected changes Door with unlockcommand
+			Device: Smoke Alarm's alarm state changes to both
+			Device: Smoke Alarm's alarm state changes to off
+			Device: Door's lock state changes to locked
+			App: Opens door when smoke detected changes Door with unlockcommand
+		Change Number: 9
+			Device: Door's lock state changes to locked
+			App: Opens door when smoke detected changes Door with unlockcommand
+			Device: Smoke Alarm's alarm state changes to both
+			Device: Door's lock state changes to unlocked
+			Device: Door's lock state changes to locked
+			App: Opens door when smoke detected changes Door with unlockcommand
+		Change Number: 10
+			Device: Door's lock state changes to unlocked
+			Device: Door's lock state changes to locked
+			Device: Smoke Alarm's alarm state changes to off
+			App: Oven and Smokealarm changes Oven with setMachineStatecommand
+			App: Oven and Smokealarm changes Oven with setMachineStatecommand
+			App: Opens door when smoke detected changes Door with unlockcommand

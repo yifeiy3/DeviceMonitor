@@ -1,0 +1,71 @@
+All device info: 
+[{"name": "Monitor Device", "capabilities": [{"name": "Execute", "attributes": ["data"], "commands": ["execute"]}], "id": "9793402f-fcb7-42af-8461-da541b539f01", "label": null}, {"name": "Virtual Switch 2", "capabilities": [{"name": "Switch", "attributes": ["switch"], "commands": ["on", "off"]}, {"name": "Sensor", "attributes": [], "commands": []}, {"name": "Actuator", "attributes": [], "commands": []}], "id": "abeafef6-7372-4347-bab6-4f485b8fb2d7", "label": null}, {"name": "Virtual Switch1", "capabilities": [{"name": "Switch", "attributes": ["switch"], "commands": ["on", "off"]}, {"name": "Sensor", "attributes": [], "commands": []}, {"name": "Actuator", "attributes": [], "commands": []}, {"name": "Relay Switch", "attributes": ["switch"], "commands": ["on", "off"]}, {"name": "Health Check", "attributes": ["checkInterval", "DeviceWatch-DeviceStatus", "healthStatus", "healthStatus", "healthStatus", "DeviceWatch-Enroll", "DeviceWatch-Enroll", "DeviceWatch-Enroll"], "commands": ["ping"]}], "id": "4db1d2f7-41d5-466a-8d48-570f14ca4886", "label": null}, {"name": "Oven", "capabilities": [{"name": "Temperature Measurement", "attributes": ["temperature"], "commands": []}, {"name": "Switch", "attributes": ["switch"], "commands": ["on", "off"]}, {"name": "Refresh", "attributes": [], "commands": ["refresh"]}, {"name": "Door Control", "attributes": ["door"], "commands": ["open", "close"]}, {"name": "Thermostat Heating Setpoint", "attributes": ["heatingSetpoint"], "commands": ["setHeatingSetpoint"]}, {"name": "Ocf", "attributes": ["n", "icv", "dmv", "di", "pi", "mnmn", "mnml", "mnmo", "mndt", "mnpv", "mnos", "mnhw", "mnfv", "mnsl", "st", "vid"], "commands": ["postOcfCommand"]}, {"name": "Execute", "attributes": ["data"], "commands": ["execute"]}, {"name": "Remote Control Status", "attributes": ["remoteControlEnabled"], "commands": []}, {"name": "Oven Operational State", "attributes": ["machineState", "supportedMachineStates", "ovenJobState", "operationTime", "completionTime", "progress"], "commands": ["setMachineState", "stop"]}, {"name": "Oven Setpoint", "attributes": ["ovenSetpoint"], "commands": ["setOvenSetpoint"]}, {"name": "Oven Operating State", "attributes": ["machineState", "supportedMachineStates", "ovenJobState", "operationTime", "completionTime", "progress"], "commands": ["setMachineState", "stop", "start"]}, {"name": "custom.dthVersion", "attributes": ["versionNumber"], "commands": []}, {"name": "custom.deviceInfo", "attributes": ["modelNumber"], "commands": []}, {"name": "custom.region", "attributes": ["region"], "commands": []}, {"name": "custom.ovenCavityStatus", "attributes": ["ovenCavityStatus"], "commands": []}], "id": "52a2d04b-15b5-48e0-97e0-ef5b4f96113a", "label": null}, {"name": "Smoke Alarm", "capabilities": [{"name": "Alarm", "attributes": ["alarm"], "commands": ["off", "strobe", "siren", "both"]}, {"name": "Sensor", "attributes": [], "commands": []}, {"name": "Actuator", "attributes": [], "commands": []}, {"name": "Health Check", "attributes": ["checkInterval", "DeviceWatch-DeviceStatus", "healthStatus", "healthStatus", "healthStatus", "DeviceWatch-Enroll", "DeviceWatch-Enroll", "DeviceWatch-Enroll"], "commands": ["ping"]}], "id": "25afa2d1-8013-454d-bd42-7b5a9fa87173", "label": null}, {"name": "Door", "capabilities": [{"name": "Battery", "attributes": ["battery"], "commands": []}, {"name": "Configuration", "attributes": [], "commands": ["configure"]}, {"name": "Lock", "attributes": ["lock"], "commands": ["lock", "unlock"]}, {"name": "Refresh", "attributes": [], "commands": ["refresh"]}, {"name": "Sensor", "attributes": [], "commands": []}, {"name": "Actuator", "attributes": [], "commands": []}, {"name": "Health Check", "attributes": ["checkInterval", "DeviceWatch-DeviceStatus", "healthStatus", "healthStatus", "healthStatus", "DeviceWatch-Enroll", "DeviceWatch-Enroll", "DeviceWatch-Enroll"], "commands": ["ping"]}], "id": "c4a159b1-cadd-41aa-9b17-cc0e9643c9a8", "label": null}]
+
+All devices: 
+	Monitor Device: 9793402f-fcb7-42af-8461-da541b539f01
+	Virtual Switch 2: abeafef6-7372-4347-bab6-4f485b8fb2d7
+	Virtual Switch1: 4db1d2f7-41d5-466a-8d48-570f14ca4886
+	Oven: 52a2d04b-15b5-48e0-97e0-ef5b4f96113a
+	Smoke Alarm: 25afa2d1-8013-454d-bd42-7b5a9fa87173
+	Door: c4a159b1-cadd-41aa-9b17-cc0e9643c9a8
+
+Monitor Device Events: 
+[]
+Monitor Device datastate: []
+Virtual Switch 2 Events: 
+[]
+Virtual Switch 2 switchstate: []
+Virtual Switch1 Events: 
+[]
+Virtual Switch1 switchstate: []
+Virtual Switch1 switchstate: []
+Virtual Switch1 checkIntervalstate: []
+Oven Events: 
+[{"name": null, "device": {"name": "Oven", "id": "52a2d04b-15b5-48e0-97e0-ef5b4f96113a", "label": null}, "source": {"name": "APP_COMMAND", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "setMachineState", "desc": "Oven and Smokealarm sent setMachineState command to Oven", "date": "2020-04-11T23:06:34Z", "deviceId": "52a2d04b-15b5-48e0-97e0-ef5b4f96113a"}, {"name": null, "device": {"name": "Oven", "id": "52a2d04b-15b5-48e0-97e0-ef5b4f96113a", "label": null}, "source": {"name": "APP_COMMAND", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "setMachineState", "desc": "Oven and Smokealarm sent setMachineState command to Oven", "date": "2020-04-11T23:13:05Z", "deviceId": "52a2d04b-15b5-48e0-97e0-ef5b4f96113a"}, {"name": null, "device": {"name": "Oven", "id": "52a2d04b-15b5-48e0-97e0-ef5b4f96113a", "label": null}, "source": {"name": "APP_COMMAND", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "setMachineState", "desc": "Oven and Smokealarm sent setMachineState command to Oven", "date": "2020-04-11T23:13:28Z", "deviceId": "52a2d04b-15b5-48e0-97e0-ef5b4f96113a"}, {"name": null, "device": {"name": "Oven", "id": "52a2d04b-15b5-48e0-97e0-ef5b4f96113a", "label": null}, "source": {"name": "APP_COMMAND", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "setMachineState", "desc": "Oven and Smokealarm sent setMachineState command to Oven", "date": "2020-04-11T23:33:28Z", "deviceId": "52a2d04b-15b5-48e0-97e0-ef5b4f96113a"}, {"name": null, "device": {"name": "Oven", "id": "52a2d04b-15b5-48e0-97e0-ef5b4f96113a", "label": null}, "source": {"name": "APP_COMMAND", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "setMachineState", "desc": "Oven and Smokealarm sent setMachineState command to Oven", "date": "2020-04-11T23:33:32Z", "deviceId": "52a2d04b-15b5-48e0-97e0-ef5b4f96113a"}]
+Oven temperaturestate: []
+Oven switchstate: []
+Oven doorstate: []
+Oven heatingSetpointstate: []
+Oven nstate: []
+Oven icvstate: []
+Oven dmvstate: []
+Oven distate: []
+Oven pistate: []
+Oven mnmnstate: []
+Oven mnmlstate: []
+Oven mnmostate: []
+Oven mndtstate: []
+Oven mnpvstate: []
+Oven mnosstate: []
+Oven mnhwstate: []
+Oven mnfvstate: []
+Oven mnslstate: []
+Oven ststate: []
+Oven vidstate: []
+Oven datastate: []
+Oven remoteControlEnabledstate: []
+Oven machineStatestate: []
+Oven supportedMachineStatesstate: []
+Oven ovenJobStatestate: []
+Oven operationTimestate: []
+Oven completionTimestate: []
+Oven progressstate: []
+Oven ovenSetpointstate: []
+Oven machineStatestate: []
+Oven supportedMachineStatesstate: []
+Oven ovenJobStatestate: []
+Oven operationTimestate: []
+Oven completionTimestate: []
+Oven progressstate: []
+Oven modelNumberstate: []
+Oven regionstate: []
+Oven ovenCavityStatusstate: []
+Smoke Alarm Events: 
+[{"name": "alarm", "device": {"name": "Smoke Alarm", "id": "25afa2d1-8013-454d-bd42-7b5a9fa87173", "label": null}, "source": {"name": "DEVICE", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "both", "desc": "Smoke Alarm alarm is both", "date": "2020-04-11T23:33:00Z", "deviceId": "25afa2d1-8013-454d-bd42-7b5a9fa87173"}, {"name": "alarm", "device": {"name": "Smoke Alarm", "id": "25afa2d1-8013-454d-bd42-7b5a9fa87173", "label": null}, "source": {"name": "DEVICE", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "off", "desc": "Smoke Alarm alarm is off", "date": "2020-04-11T23:33:20Z", "deviceId": "25afa2d1-8013-454d-bd42-7b5a9fa87173"}, {"name": null, "device": {"name": "Smoke Alarm", "id": "25afa2d1-8013-454d-bd42-7b5a9fa87173", "label": null}, "source": {"name": "APP_COMMAND", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "siren", "desc": "Oven and Smokealarm sent siren command to Smoke Alarm", "date": "2020-04-11T23:33:36Z", "deviceId": "25afa2d1-8013-454d-bd42-7b5a9fa87173"}, {"name": "alarm", "device": {"name": "Smoke Alarm", "id": "25afa2d1-8013-454d-bd42-7b5a9fa87173", "label": null}, "source": {"name": "DEVICE", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "siren", "desc": "Smoke Alarm alarm is siren", "date": "2020-04-11T23:33:36Z", "deviceId": "25afa2d1-8013-454d-bd42-7b5a9fa87173"}, {"name": "alarm", "device": {"name": "Smoke Alarm", "id": "25afa2d1-8013-454d-bd42-7b5a9fa87173", "label": null}, "source": {"name": "DEVICE", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "off", "desc": "Smoke Alarm alarm is off", "date": "2020-04-12T19:29:53Z", "deviceId": "25afa2d1-8013-454d-bd42-7b5a9fa87173"}]
+Smoke Alarm alarmstate: [{"value": "siren", "state": "alarm", "date": "2020-04-11T22:58:47Z"}, {"value": "off", "state": "alarm", "date": "2020-04-11T23:01:50Z"}, {"value": "siren", "state": "alarm", "date": "2020-04-11T23:01:57Z"}, {"value": "off", "state": "alarm", "date": "2020-04-11T23:02:36Z"}, {"value": "siren", "state": "alarm", "date": "2020-04-11T23:03:08Z"}, {"value": "off", "state": "alarm", "date": "2020-04-11T23:03:35Z"}, {"value": "siren", "state": "alarm", "date": "2020-04-11T23:04:02Z"}, {"value": "off", "state": "alarm", "date": "2020-04-11T23:06:07Z"}, {"value": "both", "state": "alarm", "date": "2020-04-11T23:06:08Z"}, {"value": "off", "state": "alarm", "date": "2020-04-11T23:06:10Z"}, {"value": "both", "state": "alarm", "date": "2020-04-11T23:06:11Z"}, {"value": "off", "state": "alarm", "date": "2020-04-11T23:06:12Z"}, {"value": "both", "state": "alarm", "date": "2020-04-11T23:06:16Z"}, {"value": "off", "state": "alarm", "date": "2020-04-11T23:06:17Z"}, {"value": "both", "state": "alarm", "date": "2020-04-11T23:06:18Z"}, {"value": "off", "state": "alarm", "date": "2020-04-11T23:06:19Z"}, {"value": "siren", "state": "alarm", "date": "2020-04-11T23:06:38Z"}, {"value": "off", "state": "alarm", "date": "2020-04-11T23:12:40Z"}, {"value": "siren", "state": "alarm", "date": "2020-04-11T23:13:32Z"}, {"value": "off", "state": "alarm", "date": "2020-04-11T23:32:34Z"}, {"value": "both", "state": "alarm", "date": "2020-04-11T23:32:36Z"}, {"value": "off", "state": "alarm", "date": "2020-04-11T23:32:39Z"}, {"value": "both", "state": "alarm", "date": "2020-04-11T23:32:41Z"}, {"value": "off", "state": "alarm", "date": "2020-04-11T23:32:43Z"}, {"value": "both", "state": "alarm", "date": "2020-04-11T23:33:00Z"}, {"value": "off", "state": "alarm", "date": "2020-04-11T23:33:20Z"}, {"value": "siren", "state": "alarm", "date": "2020-04-11T23:33:36Z"}, {"value": "off", "state": "alarm", "date": "2020-04-12T19:29:53Z"}]
+Smoke Alarm checkIntervalstate: []
+Door Events: 
+[{"name": null, "device": {"name": "Door", "id": "c4a159b1-cadd-41aa-9b17-cc0e9643c9a8", "label": null}, "source": {"name": "APP_COMMAND", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "unlock", "desc": "Opens door when smoke detected sent unlock command to Door", "date": "2020-04-11T23:33:14Z", "deviceId": "c4a159b1-cadd-41aa-9b17-cc0e9643c9a8"}, {"name": "lock", "device": {"name": "Door", "id": "c4a159b1-cadd-41aa-9b17-cc0e9643c9a8", "label": null}, "source": {"name": "DEVICE", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "unlocked", "desc": "Door lock is unlocked", "date": "2020-04-11T23:33:14Z", "deviceId": "c4a159b1-cadd-41aa-9b17-cc0e9643c9a8"}, {"name": "lock", "device": {"name": "Door", "id": "c4a159b1-cadd-41aa-9b17-cc0e9643c9a8", "label": null}, "source": {"name": "DEVICE", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "locked", "desc": "Door lock is locked", "date": "2020-04-11T23:33:16Z", "deviceId": "c4a159b1-cadd-41aa-9b17-cc0e9643c9a8"}, {"name": null, "device": {"name": "Door", "id": "c4a159b1-cadd-41aa-9b17-cc0e9643c9a8", "label": null}, "source": {"name": "APP_COMMAND", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "unlock", "desc": "Opens door when smoke detected sent unlock command to Door", "date": "2020-04-11T23:33:36Z", "deviceId": "c4a159b1-cadd-41aa-9b17-cc0e9643c9a8"}, {"name": "lock", "device": {"name": "Door", "id": "c4a159b1-cadd-41aa-9b17-cc0e9643c9a8", "label": null}, "source": {"name": "DEVICE", "enumType": "smartthings.message.event.EventSource"}, "stringValue": "unlocked", "desc": "Door lock is unlocked", "date": "2020-04-11T23:33:36Z", "deviceId": "c4a159b1-cadd-41aa-9b17-cc0e9643c9a8"}]
+Door batterystate: [{"value": "94", "state": "battery", "date": "2020-04-11T22:27:49Z"}]
+Door lockstate: [{"value": "unlocked", "state": "lock", "date": "2020-04-11T22:27:49Z"}, {"value": "locked", "state": "lock", "date": "2020-04-11T22:28:40Z"}, {"value": "unlocked", "state": "lock", "date": "2020-04-11T23:14:16Z"}, {"value": "locked", "state": "lock", "date": "2020-04-11T23:14:17Z"}, {"value": "unlocked", "state": "lock", "date": "2020-04-11T23:15:20Z"}, {"value": "locked", "state": "lock", "date": "2020-04-11T23:18:57Z"}, {"value": "unlocked", "state": "lock", "date": "2020-04-11T23:19:05Z"}, {"value": "locked", "state": "lock", "date": "2020-04-11T23:32:49Z"}, {"value": "unlocked", "state": "lock", "date": "2020-04-11T23:33:00Z"}, {"value": "locked", "state": "lock", "date": "2020-04-11T23:33:05Z"}, {"value": "unlocked", "state": "lock", "date": "2020-04-11T23:33:14Z"}, {"value": "locked", "state": "lock", "date": "2020-04-11T23:33:16Z"}, {"value": "unlocked", "state": "lock", "date": "2020-04-11T23:33:36Z"}]
+Door checkIntervalstate: []
