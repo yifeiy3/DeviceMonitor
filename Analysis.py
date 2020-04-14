@@ -283,7 +283,7 @@ class Analysis():
             print(items)
         return l
         
-    def _loadallevts(self, since = None):
+    def _loadallevts(self, since = None, maxEvts = 1000):
         '''
             Load all the events that has happened to the system since Since in a sorted datetime order
             also return if there is any discrepancy between obj state and system events.
@@ -294,7 +294,7 @@ class Analysis():
         diff = []
         for objname in self.items:
             obj = self.items[objname]
-            evtjson = self.mr.getEvents(obj.id, since = since)
+            evtjson = self.mr.getEvents(obj.id, since = since, max_evts=maxEvts)
             sys, app, conf, modstates = self._loadEvts(objname, evtjson, since)
             self._loadStates(obj, modstates, since)
             allevt = allevt + sys + app
@@ -340,11 +340,11 @@ class Analysis():
             res.append(self.allevts[i])
         return res
    
-    def analyze(self, outputPath, since = None):
+    def analyze(self, outputPath, since = None, maxe = 1000):
 
         system = self.mr.getThings("all")
         self._loadItems(system, since)
-        bad_conflicts, differ = self._loadallevts(since)
+        bad_conflicts, differ = self._loadallevts(since, maxEvts=maxe)
 
         d_conflicts = self.analyze_direct() #direct conflicts
         b_conflicts = self._dfs(bad_conflicts)
