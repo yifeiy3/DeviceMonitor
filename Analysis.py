@@ -273,12 +273,16 @@ class Analysis():
             sort all the events in chronological order
         '''
         #change date to an integer so we can compare
+        #TODO: check the correctness of this sorting, gave the wrong order on testing
         for i in range(len(evtlist)):
             date, c1, a1, st1, v1, ob1 = evtlist[i]
             new = int(''.join(c for c in date if c.isdigit()))
             evtlist[i] = (new, c1, a1, st1, v1, ob1)
-        return sorted(evtlist)
-
+        l = sorted(evtlist)
+        for items in l:
+            print(items)
+        return l
+        
     def _loadallevts(self, since = None):
         '''
             Load all the events that has happened to the system since Since in a sorted datetime order
@@ -328,7 +332,7 @@ class Analysis():
     
     def _backtrace(self, idx):
         '''
-            obtain the last 6 eventsthat happenns before the change of important item
+            obtain the last 6 events that happenns before the change of important item
         '''
         res = []
         start = max(0, idx-5)
@@ -347,6 +351,7 @@ class Analysis():
 
         i_conflicts, imp = self.analyze_allevents()
 
+        #TODO: Deal with these important changes
         imp_chgs = {}
         for obj, chgs in imp:
             addOrReplace(imp_chgs, obj, self._backtrace(chgs), obj)

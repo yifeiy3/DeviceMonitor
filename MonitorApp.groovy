@@ -33,7 +33,7 @@ preferences {
     	"capability.execute",
         title: "the monitor",
         multiple:false,
-        required:true
+        required:false
   }
   section ("Sensor access") {
     input "sensorsTemperature",
@@ -257,7 +257,9 @@ def handlerEvents() {
    
     if(params.since){
         //since = new Date(Math.round(params.since.toFloat() * 1000))
-       	since = Date.parse("yyyy-mm-dd hh:mm:ss.SSS", params.since)
+        log.debug "Input Param: $params.since"
+       	since = Date.parse("yyyy-MM-dd hh:mm:ss.SSS", params.since)
+        log.debug "Event is ran since $since"
     } else {
         since = new Date() -7
     }
@@ -266,7 +268,7 @@ def handlerEvents() {
         //id:          it.id.toString(),
         device:		 it.device,
         source:		 it.source,
-        date:        it.date,
+        date:        it.date.format("yyyy-MM-dd hh:mm:ss.SSS"),
         deviceId:    it.deviceId,
         name:        it.name,
         //unit:        it.unit,
@@ -295,7 +297,7 @@ def handlerStates(){
     log.debug "handlerStates().params.since: ${params.since}"
     if(params.since){
         //since = new Date(Math.round(params.since.toFloat() * 1000))
-       	since = Date.parse("yyyy-mm-dd hh:mm:ss.SSS", params.since)
+       	since = Date.parse("yyyy-MM-dd hh:mm:ss.SSS", params.since)
     } else {
         since = new Date() -7
     }

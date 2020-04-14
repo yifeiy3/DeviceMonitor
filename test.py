@@ -4,7 +4,7 @@ import json
 monitorid = "9793402f-fcb7-42af-8461-da541b539f01" #arbitrary id for a device called monitor
 stdattrribute = ['healthStatus', 'DeviceWatch-DeviceStatus', 'DeviceWatch-Enroll', 'versionNumber']
 APIKey = "ff5c476f-1b99-4fc7-a747-0bed31268f11"
-APIEndpt = "https://graph.api.smartthings.com/api/smartapps/installations/bb64b684-213a-492e-8138-9b6722e1e9e5"
+APIEndpt = "https://graph.api.smartthings.com/api/smartapps/installations/6428fa6b-8024-4e7b-8629-3d758a9aa2f2"
 
 md = gd.Monitor(APIKey, APIEndpt)
 d_info = md.getThings("all")
