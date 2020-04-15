@@ -17,7 +17,11 @@ monitor_events = md.getEvents(monitorid, 100) #example of getting events for one
 switch_states = md.getStates("switch", "abeafef6-7372-4347-bab6-4f485b8fb2d7")
 switch_events = md.getEvents("abeafef6-7372-4347-bab6-4f485b8fb2d7", 5)
 
+curr_mode = md.getHomeMode() #gets current location mode
+
 with open('deviceInfos/alldevicelogtest.txt', 'w') as outfile:
+    outfile.write("Current location mode: \n")
+    json.dump(curr_mode, outfile)
     outfile.write("All device info: \n")
     json.dump(d_info, outfile)
     outfile.write("\n\nAll devices: \n")

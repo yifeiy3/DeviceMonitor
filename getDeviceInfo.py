@@ -16,16 +16,18 @@ class Monitor():
             "kind":thing}
         return self._retrieveInfo(param)
     
-    def getStates(self, stateName, thing_id, since=None):
+    def getStates(self, stateName, thing_id, since=None, max_sts = 1000):
         if since is None:
             param = {"function":"states",
                 "state":stateName,
-                "thing_id":thing_id}
+                "thing_id":thing_id,
+                "max":max_sts}
         else:
             param = {"function":"states",
                 "state":stateName,
                 "thing_id":thing_id,
-                "since":since}
+                "since":since,
+                "max":max_sts}
         return self._retrieveInfo(param)
     
     def getEvents(self, thing_id, max_evts=1000, since=None):
@@ -33,4 +35,8 @@ class Monitor():
             "max":max_evts,
             "since":since,
             "id":thing_id}
+        return self._retrieveInfo(param)
+
+    def getHomeMode(self):
+        param = {"function":"mode"}
         return self._retrieveInfo(param)

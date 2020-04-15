@@ -91,16 +91,15 @@ class Analysis():
     def __init__(self, tkey, tendpoint, important = None):
         self.mr = gd.Monitor(tkey, tendpoint)
         self.items = {}
-        # self.mstate = []
+        self.mevents = [] #Events for location changes, format "Location Mode: $mode"
         self.allevts = []
         self.important = important
     
     def _loadItems(self, jsondata, since=None):
         for it in jsondata:
-            # if(it["name"] == "Monitor Device"):
-            #     #format of mstate = (date, "Appname")
-            #     self.mstate = getJsonState(self.mr.getStates("lastExec", it["id"], since))
-            #     continue
+            if(it["name"] == "Monitor Device"):
+                self.mevents = getJsonState(self.mr.getStates("lastExec", it["id"], since))
+                continue
             itemid = it["id"]
             attributes = {}
             itt = Objects(itemid, it["name"], attributes)
@@ -272,15 +271,26 @@ class Analysis():
         '''
             sort all the events in chronological order
         '''
+        def extractInfo(evtstr):
+            l = evtstr.split(" ")
+            res = ""
+            for items in l[2:]:
+                res += items
+                res += " "
+            return res[:-1] #first 2 string is "location mode:"
+
+        #add in where location mode is changed for rule analysis
+        if self.mevents[0][0] != "": 
+            for i in range(len(self.mevents)):
+                new = (self.mevents[i][0], "LOCATION_MODE", None, None, extractInfo(self.mevents[i][1]), None)
+                evtlist.append(new)
+
         #change date to an integer so we can compare
-        #TODO: check the correctness of this sorting, gave the wrong order on testing
-        for i in range(len(evtlist)):
+        for i in range(len(evtlist)): 
             date, c1, a1, st1, v1, ob1 = evtlist[i]
             new = int(''.join(c for c in date if c.isdigit()))
             evtlist[i] = (new, c1, a1, st1, v1, ob1)
         l = sorted(evtlist)
-        for items in l:
-            print(items)
         return l
         
     def _loadallevts(self, since = None, maxEvts = 1000):
@@ -340,10 +350,13 @@ class Analysis():
             res.append(self.allevts[i])
         return res
    
-    def analyze(self, outputPath, since = None, maxe = 1000):
+    def analyze(self, outputPath, since = None, maxe = 1000, debug=False):
 
         system = self.mr.getThings("all")
         self._loadItems(system, since)
+        if not self.mevents:
+            self.mevents = [("", self.mr.getHomeMode()["mode"]["name"])] #no change of location mode log, use current
+
         bad_conflicts, differ = self._loadallevts(since, maxEvts=maxe)
 
         d_conflicts = self.analyze_direct() #direct conflicts
@@ -390,6 +403,8 @@ class Analysis():
                     for tt in l:
                         if(tt[1] == "APP_COMMAND"):
                             outfile.write("\t\t\tApp: " + tt[2] + " changes " + tt[5] + " with " + tt[4] + "command\n")
+                        elif(tt[1] == 'LOCATION_MODE'):
+                            outfile.write("\t\t\tLocation Mode is changed to: " + tt[4] + "\n")
                         else:
                             outfile.write("\t\t\tDevice: " + tt[5] + "'s " + tt[3] + " state changes to " + tt[4] + "\n")
             if differ:  #This should not happen, for debug purposes.
@@ -401,6 +416,15 @@ class Analysis():
                         outfile.write("\t\tState:" + it[1] + "\n")
                     for evt in obj.sysst[state][0]:
                         outfile.write("\t\tEvent:" + evt + "\n")
-            
+            if debug:
+                outfile.write("ALL EVENTS FOR DEBUG PURPOSES: \n")
+                for tt in self.allevts:
+                    if(tt[1] == "APP_COMMAND"):
+                        outfile.write("\t\t\tApp: " + tt[2] + " changes " + tt[5] + " with " + tt[4] + "command\n")
+                    elif(tt[1] == 'LOCATION_MODE'):
+                        outfile.write("\t\t\tLocation Mode is changed to: " + tt[4] + "\n")
+                    else:
+                        outfile.write("\t\t\tDevice: " + tt[5] + "'s " + tt[3] + " state changes to " + tt[4] + "\n")
+                
 
 
