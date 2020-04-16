@@ -61,7 +61,8 @@ class Rules():
         self.allEvents = events
         self.rules = rules
         self.dodict = {} #map device to attribute, attribute to value, value to all the conflicts.
-        self.dontdict = {} 
+        self.dontdict = {}
+        self.tempdict = {} #A temporary dictionary used ot help handling dodict business. 
         
     def _initializeState(self, items):
         deviceD = {}
@@ -89,31 +90,58 @@ class Rules():
                     addRule(self.dontdict, device, attr, val, conds)
                 else:
                     addRule(self.dodict, device, attr, val, conds)
+                    for a, d, v in conds:
+                        addRule(self.tempdict, d, a, v, [(attr, device, val)]) #add a reverse dictionary for easy lookup
+
     
-    def checkValidDont(self, attri, devi, val):
+    def checkValidCond(self, attri, devi, val):
+        '''
+            return true if condition met 
+        '''
         if devi == "Location":
             return (val == self.mode)
         else:
             return (val == self.deviceState[devi][attri])
-
+    
     def checkRules(self):
         '''
             For the devices we could not infer states (The states are set way before and we can not obtain log),
             we assume such device conditions do not violate any rules.
         '''
-        #TODO: use a marking method to check DO rules?
         dontVio = [] #violation for don't rules
-        doVio = []
+        doVio = [] #violation for do rules
         for i in range(len(self.allEvents)):
             date, cmd, name, st, val, tobj = self.allEvents[i]
             if cmd == 'DEVICE':
                 self.deviceState[tobj][st] = val
+                try: #a device changed state, check if any do rule conditions are satisfied
+                    coreq = self.tempdict[tobj][st][val]
+                    for att, de, va in coreq:
+                        docond = self.dodict[de][att][va]
+                        flag = True
+                        for a, d, v in docond:
+                            flag = flag and self.checkValidCond(a, d, v)
+                        if flag and not self.checkValidCond(att, de, va): 
+                            #all conditions for the do rule is satisfied and our rule is still not satisfied
+                            #need to check if do rule is executed within a very brief time frame.
+                            j = i+1
+                            changed = False
+                            while(j < len(self.allEvents) and self.allEvents[j][0] < date + 1500): #events happened within 1.5 second
+                                _date, _cmd, _name, thest, theval, theobj = self.allEvents[j]
+                                if thest == att and theval == va and theobj == de: #we did change this device accordingly
+                                    changed = True
+                                    break
+                                j = j+1
+                            if not changed:
+                                doVio.append((name, tobj, st, val, coreq))
+                except:
+                    continue
             else:
                 try:
                     confs = self.dontdict[tobj][st][val]
                     flag = True
                     for att, de, va in confs:
-                        flag = flag and self.checkValidDont(att, de, va)
+                        flag = flag and self.checkValidCond(att, de, va)
                     if flag:
                         if name:
                             dontVio.append((name, tobj, st, val, confs)) 
@@ -125,17 +153,33 @@ class Rules():
         return dontVio, doVio
 
     def ruleAnalysis(self, outfile):
+        '''
+            run analysis on rules, result specified in outfile.
+        '''
         self.parseRules()
         do, dont = self.checkRules()
         with open(outfile, 'w') as out:
-            #TODO: do it for DO Violation also
             out.write("All the DONT rules that are violated: \n")
             for i in range(len(dont)):
                 nm, ob, st, val, confs = dont[i]
                 if nm == "LocationMode":
-                    out.write("\t" + str(i+1) + " Changing location mode to: " + val + "\n")
+                    out.write("\t" + str(i+1) + ". Changing location mode to: " + val + "\n")
                 else:
-                    out.write("\t" + str(i+1) + "App: " + nm + "changed state " + st + " of device " + ob + " to " + val + "\n")
+                    out.write("\t" + str(i+1) + ". App: " + nm + "changed state " + st + " of device " + ob + " to " + val + "\n")
+                out.write("\t Under the condition of: \n")
+                for j in range(len(confs)):
+                    att, de, va = confs[i]
+                    if att == "mode":
+                        out.write("\t\t The location mode is: " + va + "\n")
+                    else:
+                        out.write("\t\tThe attribute " + att + " for " + de + " is " + va + "\n")
+            out.write("All the DO rules that are violated: \n")
+            for i in range(len(do)):
+                nm, ob, st, val, confs = do[i]
+                if not nm:
+                    out.write("\t" + str(i+1) + ". Not Changing location mode to: " + val + "\n")
+                else:
+                    out.write("\t" + str(i+1) + ". Not Changing state: " + st + " of device " + ob + " to " + val + "\n")
                 out.write("\t Under the condition of: \n")
                 for j in range(len(confs)):
                     att, de, va = confs[i]

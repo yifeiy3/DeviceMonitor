@@ -31,17 +31,15 @@ def isIndirect(obj1, obj2):
     return False
 
 def isCloseProximity(date, last):
-    #typical date input : 2020-03-06T16:30:43Z
+    '''
+        typical date input : 2020-03-06T16:30:43.130 
+        upto the date of millisecond
+    '''
     if not last or not date: 
         return False
-    times = date[:-3] 
-    seconds = date[-3:][:-1]
-    ltime = last[:-3]
-    lseconds = last[-3:][:-1]
-    if(times != ltime):
-        return False #different dates
-    else:
-        return abs(int(seconds) - int(lseconds)) < 2 #data happens within 1 second
+    t1 = int(''.join(c for c in date if c.isdigit()))
+    t2 = int(''.join(c for c in last if c.isdigit()))
+    return abs(int(t2) - int(t1)) < 2000 #data happ   else:ens within 2 second
 
 class Objects():
     def __init__(self, objid, objname, objstates):
@@ -279,10 +277,10 @@ class Analysis():
                 res += " "
             return res[:-1] #first 2 string is "location mode:"
 
-        #add in where location mode is changed for rule analysis
+        #add in where location mode is changed for the convenience of rule analysis
         if self.mevents[0][0] != "": 
             for i in range(len(self.mevents)):
-                new = (self.mevents[i][0], "LOCATION_MODE", None, None, extractInfo(self.mevents[i][1]), None)
+                new = (self.mevents[i][0], "LOCATION_MODE", None, "mode", extractInfo(self.mevents[i][1]), "Location")
                 evtlist.append(new)
 
         #change date to an integer so we can compare
