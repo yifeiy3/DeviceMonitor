@@ -30,9 +30,9 @@ To run our monitor for analysis, first click `simulate` on the monitor app and a
 
 Under `getlog.py`, change the `API Key` and `API Endpoint` correspondingly and add any important devices in the system that you want to be alarmed if any state change for them happens to the `important` field. The `since` field can be changed accordingly to the earliest event you want to monitor, the default None looks at past seven days of events.
 
-If additional analysis corresponds to specfic rules is desired, include the additional `rules_input`, `rules_output` field for analysis.
+If additional analysis corresponds to specfic rules is desired, provide the `rules_input`, `rules_output` field in the file.
 
-Finally, running `python3 getlog.py` should output an analysis file under the `log_output` under `rules_output` specified in the file.
+Finally, running `python3 getlog.py` should output an analysis file under the `log_output` and `rules_output` files.
 
 ## Obtaining Device Information Only
 To obtain the events, states, and all devices in the system without doing the analysis, run the monitor on Samsung IDE similar to before. Then, follow the steps in `test.py` to obtain all the info through the structure we used to communicate to the monitor on Samsung hub.
