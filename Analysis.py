@@ -237,6 +237,7 @@ class Analysis():
                     #Two app commands are in conflict, add both
                     if cmd2 == cmd1:
                         addOrReplace(cdict, app1, (app2, device), device)
+                        continue
                     #Otherwise, App command 1 produced an unintended result on the object, must be conflict from app before app command1,
                     #we have already added prev so we already accounted for this. 
                     #Prev can be defined to be first in this case since second is result from prev app
@@ -256,9 +257,10 @@ class Analysis():
                         addOrReplace(cdict, dummyapp, (app1, device), device)
                     if cmd2 == cmd1:
                         addOrReplace(cdict, app1, (app2, device), device)
+                        continue
                 if cmd2 == "APP_COMMAND":
                     if isCloseProximity(d2, prev[0]):
-                        dummyapp = device + "_state_" + prev[2] + "_state_" + prev[4]
+                        dummyapp = device + "_state_" + prev[3] + "_state_" + prev[4]
                         addOrReplace(cdict, dummyapp, (app2, device), device)
                     else:
                         dummyapp = device + "_state_" + st1 + "_state_" + val1
