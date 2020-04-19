@@ -1,0 +1,2 @@
+DONT unlock THE Door WHEN LOCATION MODE IS Away AND alarm OF Smoke Alarm IS siren
+DO SET LOCATION MODE TO Home WHEN lock OF Door IS unlocked AND LOCATION MODE IS Away

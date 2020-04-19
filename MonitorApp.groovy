@@ -210,6 +210,8 @@ def handlerURL() {
             return handlerEvents()
         case "states":
             return handlerStates()
+        case "mode":
+        	return handlerMode()
         default:
             log.debug( $/handlerURL() received invalid $$params.function "$params.function"/$ )
             return []
@@ -219,6 +221,12 @@ def handlerURL() {
 /**
  * List .id and .displayName for each $params.type things
  */
+def handlerMode(){
+	def currMode = location.currentMode
+    def resp = [mode: currMode]
+    return resp;
+}
+
 def handlerThings() {
     def things = getThings(params.kind)
     def resp = []
