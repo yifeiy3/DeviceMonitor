@@ -39,8 +39,12 @@ def isCloseProximity(date, last):
         return False
     t1 = int(''.join(c for c in date if c.isdigit()))
     t2 = int(''.join(c for c in last if c.isdigit()))
-    return abs(int(t2) - int(t1)) < 2000 #data happ   else:ens within 2 second
-
+    if abs(int(t2) - int(t1)) < 2000: #data happ   else:ens within 2 second
+        return True
+    elif (t1 // 1000) % 100 < 2 and (t2 // 1000) % 100 > 58:
+        return True #fail safe mechanism, if date is somehting like 23:59:59:000.
+    return False
+    
 class Objects():
     def __init__(self, objid, objname, objstates):
         self.id = objid
@@ -162,7 +166,7 @@ class Analysis():
                 prevcmd = prev[1]
                 prevst = prev[3]
                 preval = prev[4]
-                if(isCloseProximity(prev[0], date) and preval != stval):
+                if(isCloseProximity(date, prev[0]) and preval != stval):
                     #app command did not immediately cause state of the device change, add to direct conflict
                     theevt = (date, cmdtype, app, None, stval, tobject)
                     conflicts.append((prev, theevt))
