@@ -9,10 +9,13 @@ log_output = 'deviceInfos/alldevicelog.txt' #output folder for analysis of devic
 rule_output = 'deviceInfos/alldevicerule.txt' #output folder for analysis of log according to rules
 rule_input = 'rules/rule.txt' #input for our rules
 #rule_input = None
-since = datetime.utcnow() - timedelta(minutes=110) #check interaction since last hour
+#since = datetime.utcnow() - timedelta(minutes=110) #check interaction since last hour
 print("Analyzing events since")
-print(since)
-#since = None
+since = None
+if not since:
+    print(datetime.utcnow() - timedelta(days = 7))
+else:
+    print(since)
 
 An = Analysis(API_KEY, ENDPOINT, important = IMPORTANT)
 An.analyze(log_output, since)
