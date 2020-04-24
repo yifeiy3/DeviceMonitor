@@ -6,7 +6,7 @@ stdattrribute = ['healthStatus', 'DeviceWatch-DeviceStatus', 'DeviceWatch-Enroll
 
 def getJsonState(jsondata):
     '''
-        obtain all the interaction from jsondata of monitor
+        obtain all the interaction from jsondata of monitor.
     '''
     actions = []
     for v in jsondata:
