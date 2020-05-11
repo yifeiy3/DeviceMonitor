@@ -19,15 +19,15 @@ The capability.switch indicate you are adding a switch object for monitor to kee
 
 Additionally, 
 - If you want to get access to all the location mode changes in the system in the analysis, create a location mode monitor device handler with `Devicehandler.groovy`,create a device using the device handler under `My Devices`, and finally create another smartapp to monitor the location mode with `LocModeMonitor.groovy`.
-- If you want to perform additional analysis corresponds to specific rules for the devices in the environment, create a rule file with each rule of the format corresponding to the rules example under `rules/rule.txt` in the directory, the supported format is listed below. To separate the key terms for us to parse each rule, note that they must be provided in all capitalized case.
+- If you want to perform additional analysis corresponds to specific rules for the devices in the environment, create a rule file with each rule of the format corresponding to the rules example under `rules/rule.txt` in the directory, the supported format is listed below. To separate the key terms for us to parse each rule, note that they must be provided in all capitalized case. Also, extra newline and white space characters can cause the monitor to give a parser error.
 ```
     DO/DONT $deviceMethod THE $device WHEN $attribute OF $devicename IS $value AND $attri.....
     DO/DONT $deviceMethod ....  WHEN LOCATION MODE IS $mode
     DO/DONT SET LOCATION MODE TO $mode WHEN ...
 ```
 
-Additionally, we added time duration feature to rules, where for DO rules, we can specify under `DO X AFTER T timeunit`, and for DONT rules, we can specify
-`DONT X FOR T timeunit`. We have also added the feature `OR` to specify conditions `A OR B`. For a combination of `OR` and `AND`'s, `AND` has a higher
+Furthermore, we added time duration feature to rules, where for DO rules, we can specify under `DO X AFTER T timeunit`, and for DONT rules, we can specify
+`DONT X FOR T timeunit`. You can also specify time durations for conditions such as `WHERE A IS val FOR T timeunit`. Current support time unites are `SECONDS`, `MINUTES`, and `HOURS`. We have also added the feature `OR` to specify conditions `A OR B`. For a combination of `OR` and `AND`'s, `AND` has a higher
 precendence. Please separate 1 rule into multiple rules defined by `OR` for uses otherwise. The example is shown in `rules/rule.txt`.
 
 ## Running Analysis
