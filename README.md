@@ -25,6 +25,11 @@ Additionally,
     DO/DONT $deviceMethod ....  WHEN LOCATION MODE IS $mode
     DO/DONT SET LOCATION MODE TO $mode WHEN ...
 ```
+
+Additionally, we added time duration feature to rules, where for DO rules, we can specify under `DO X AFTER T timeunit`, and for DONT rules, we can specify
+`DONT X FOR T timeunit`. We have also added the feature `OR` to specify conditions `A OR B`. For a combination of `OR` and `AND`'s, `AND` has a higher
+precendence. Please separate 1 rule into multiple rules defined by `OR` for uses otherwise. The example is shown in `rules/rule.txt`.
+
 ## Running Analysis
 To run our monitor for analysis, first click `simulate` on the monitor app and add all the devices in the system to their corresponding attributes/capabilities. On the bottom of the simulation window, there should be an `API Key` and `API Endpoint`.
 
