@@ -1,4 +1,5 @@
 import re
+from itertools import groupby
 from Analysis import Objects
 from datetime import datetime, timedelta
 from Parse import parse
@@ -15,7 +16,7 @@ def addRule(d, device, attribute, value, confs, time):
     if device in d:
         if attribute in d[device]:
             if value in d[device][attribute]:
-                d[device][attribute][value] += (confs, time)
+                d[device][attribute][value].append((confs, time))
             else:
                 d[device][attribute][value] = [(confs, time)]
         else:
@@ -29,7 +30,7 @@ def addRule(d, device, attribute, value, confs, time):
 def addRuleP(d, device, method, confs, time):
     if device in d:
         if method in d[device]:
-            d[device][method] += (confs, time)
+            d[device][method].append((confs, time))
         else:
             d[device][method] = [(confs, time)]
     else:
@@ -131,9 +132,10 @@ class Rules():
                         print("\tDuration: {0}, Unit: {1}, Query: {2}".format(time[0], time[1], time[2]))
                     else:
                         print("No time constraint")
-                    for it in conds:
-                        a, d, v = it[0]
-                        addRule(self.tempdict, d, a, v, ([(method, device)], time), it[1]) #add a reverse dictionary for easy lookup
+                    for itt in conds: #list of (conditions. timeconstraint) result from OR keyword
+                        for it in itt:
+                            a, d, v = it[0]
+                            addRule(self.tempdict, d, a, v, ([(method, device)], time), it[1]) #add a reverse dictionary for easy lookup
 
     def checkValidCond(self, attri, devi, val, flag, tc):
         '''
@@ -184,16 +186,18 @@ class Rules():
         else: #We do not care about execution within a timeframe, set the second parameter to True
             return (self.checkValidCond(attri, devi, val, f, offset), True)
 
-    def isNewStateChange(self, attri, val, device, constraints):
+    def isNewStateChange(self, attri, val, device, constraints, condMet):
         '''
             Check if any device in the constraint list changes state before our last condition is true
             for the duration amount of time.
         '''
-        for stuff, _tc in constraints:
-            att, tobj, v = stuff
+        for i in range(len(constraints)):
+            items = constraints[i]
+            idx = condMet[i]
+            att, tobj, v = items[idx][0]
             if attri == att and tobj == device and v != val:
                 return True
-        return False
+            return False
 
     def checkRules(self):
         '''
@@ -219,23 +223,32 @@ class Rules():
                         for method, de in confs[0]:
                             try:
                                 docond = self.dodict[de][method]
+                                #print("docond: {0}".format(docond))
                             except:
                                 continue
                             else:
                                 for ittt in docond:
                                     flag = True
                                     theconstraints = ittt[0]
+                                    #print("theconstraints: {0}".format(theconstraints))
                                     timess = ittt[1]
+                                    condMet = []
                                     for things in theconstraints:
-                                        a, d, v = things[0]
-                                        if a == st and d == tobj and v == val:
-                                            continue #we know this is already satisfied.
-                                        timecons = things[1]
-                                        f, doff = calculateOffset(date, timecons, backwards=True) #(whether we have time constraint, the offset)
-                                        flag = flag and self.checkValidCond(a, d, v, f, doff)
+                                        flagOr = False
+                                        for i in range(len(things)): #check if any or constraint is satisfied
+                                            a, d, v = things[i][0]
+                                            timecons = things[i][1]
+                                            f, doff = calculateOffset(date, timecons, backwards=True) #(whether we have time constraint, the offset)
+                                            if self.checkValidCond(a, d, v, f, doff):
+                                                flagOr = True
+                                                condMet.append(i)
+                                                break
+                                        flag = flag and flagOr #we need all conditions to be satisfied
                                     if flag: 
                                         #all conditions for the do rule is satisfied
                                         #need to check if do rule is executed within a very brief time frame.
+                                        # print(len(theconstraints))
+                                        # print("length of condMet: {0}, condMet: {1}".format(len(condMet), condMet))
                                         j = i+1
                                         changed = False
                                         _t, dateoffset = calculateOffset(date, timess) #convert time input to the correct seconds offset
@@ -250,12 +263,13 @@ class Rules():
                                                 break
                                             #The condition is changed before our current condition is valid for the duration of time, we 
                                             #do not have our rule condition satisfied anymore.
-                                            if stt and self.allEvents[j][0] < changeoffset and self.isNewStateChange(thest, theval, theobj, theconstraints):
+                                            if stt and self.allEvents[j][0] < changeoffset and self.isNewStateChange(thest, theval, theobj, theconstraints, condMet):
                                                 changed = True
                                                 break                                    
                                             j = j+1
                                         if not changed:
-                                            doVio.append((method, de, docond, timess))
+                                            #print("huh condmet: {0}".format(condMet))
+                                            doVio.append((method, de, theconstraints, timess, condMet))
 
             if cmd == 'APP_COMMAND' or cmd == 'LOCATION_MODE':
                 try:
@@ -263,21 +277,35 @@ class Rules():
                 except: #There is no rule about this event
                     continue
                 else:
-                    flagp = True
-                    anyp = False
+                    # print("conffs : {0}".format(conffs))
                     for con, ttcons in conffs:
+                        flagp = True
+                        anyp = False
+                        conddMet = []
                         for itemms in con:
-                            att, de, va = itemms[0]
-                            timecons = itemms[1]
-                            fp, ap = self.checkWithinTime(att, de, va, ttcons, date, timecons)
-                            flagp = fp and flagp #the excution meets all the conditions for DONT
-                            anyp = ap or anyp #the execution is within the time frame for required
+                            flagOrP = False
+                            curr = -1
+                            for i in range(len(itemms)):
+                                att, de, va = itemms[i][0]
+                                timecons = itemms[i][1]
+                                fp, ap = self.checkWithinTime(att, de, va, ttcons, date, timecons)
+                                flagOrP = fp or flagOrP #the excution meets all the conditions for DONT
+                                if fp:
+                                    curr = i
+                                    anyp = (ap and fp) or anyp #the execution is within the time frame for required
+                                    if ap and fp:
+                                        break
+                            conddMet.append(curr)
+                            flagp = flagp and flagOrP
                         if flagp and anyp:
+                            # print("con: {0}".format(con))
+                            # print("ttcons: {0}".format(ttcons))
+                            # print("conddMet: {0}".format(conddMet))
                             if name:
-                                dontVio.append((name, tobj, val, conffs, ttcons))
+                                dontVio.append((name, tobj, val, con, ttcons, conddMet))
                                 #(appname that violated the rule, attributeState, device, value, description of the rule)
                             else:
-                                dontVio.append(("LocationMode", tobj, val, conffs, ttcons))
+                                dontVio.append(("LocationMode", tobj, val, con, ttcons, conddMet))
         return dontVio, doVio
 
     def ruleAnalysis(self, outfile):
@@ -285,11 +313,14 @@ class Rules():
             run analysis on rules, result specified in outfile.
         '''
         self.parseRules()
-        dont, do = self.checkRules()
+        dont, doP = self.checkRules()
+        do = [k for k,v in groupby(sorted(doP))] #there maybe repetitiveness in do rules, since for same req, multiple conditions are checked
+        #example, DO A WHEN B AND C, is checked twice. When B is true and when C is true. 
+        #TODO: Maybe we can do better than just remove repeating elements this way?
         with open(outfile, 'w') as out:
             out.write("All the DONT rules that are violated: \n")
             for i in range(len(dont)):
-                nm, ob, val, confs, timecons = dont[i]
+                nm, ob, val, confs, timecons, condMet = dont[i]
                 if nm == "LocationMode":
                     out.write("\t" + str(i+1) + ". Changing location mode to: " + val)
                 else:
@@ -298,21 +329,20 @@ class Rules():
                     out.write(" " + timecons[2] + " " + timecons[0] + " " + timecons[1] + "\n")
                 out.write("\tUnder the condition of: \n")
                 for j in range(len(confs)):
-                    condds, _time = confs[j]
-                    for k in range(len(condds)):
-                        att, de, va = condds[k][0]
-                        timeccs = condds[k][1]
-                        if att == "mode":
-                            out.write("\t\tThe location mode is: " + va)
-                        else:
-                            out.write("\t\tThe attribute " + att + " for " + de + " is " + va)
-                        if timeccs:
-                            out.write(" for " + timeccs[0] + " " + timeccs[1] + "\n")
-                        else:
-                            out.write("\n")
+                    thecond = condMet[j]
+                    att, de, va = confs[j][thecond][0]
+                    timeccs = confs[j][thecond][1]
+                    if att == "mode":
+                        out.write("\t\tThe location mode is: " + va)
+                    else:
+                        out.write("\t\tThe attribute " + att + " for " + de + " is " + va)
+                    if timeccs:
+                        out.write(" for " + timeccs[0] + " " + timeccs[1] + "\n")
+                    else:
+                        out.write("\n")
             out.write("All the DO rules that are violated: \n")
             for i in range(len(do)):
-                method, de, docond, timecons = do[i]
+                method, de, docond, timecons, condMet = do[i]
                 if de == "Location":
                     out.write("\t" + str(i+1) + ". Not Changing location mode to: " + method)
                 else:
@@ -321,16 +351,15 @@ class Rules():
                     out.write(" " + timecons[2] + " " + timecons[0] + " " + timecons[1] + "\n")
                 out.write("\tUnder the condition of: \n")
                 for j in range(len(docond)):
-                    condds, _time = docond[j]
-                    for k in range(len(condds)):
-                        att, de, va = condds[k][0]
-                        timeccs = condds[k][1]
-                        if att == "mode":
-                            out.write("\t\tThe location mode is: " + va)
-                        else:
-                            out.write("\t\tThe attribute " + att + " for " + de + " is " + va)
-                        if timeccs:
-                            out.write(" for " + timeccs[0] + " " + timeccs[1] + "\n")
-                        else:
-                            out.write("\n")
+                    thecond = condMet[j]
+                    att, de, va = docond[j][thecond][0]
+                    timeccs = docond[j][thecond][1]
+                    if att == "mode":
+                        out.write("\t\tThe location mode is: " + va)
+                    else:
+                        out.write("\t\tThe attribute " + att + " for " + de + " is " + va)
+                    if timeccs:
+                        out.write(" for " + timeccs[0] + " " + timeccs[1] + "\n")
+                    else:
+                        out.write("\n")
                     

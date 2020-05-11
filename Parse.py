@@ -10,8 +10,8 @@ def parse(rulestr):
         require, timer = parsereq(req)
         conf = []
         for items in conditions:
-            tconds, timec = parsecond(items)
-            conf.append((tconds, timec))
+            condlist = parsecond(items)
+            conf.append(condlist)
         return (require, timer), conf
     except:
         print("Parse Error for rule string: " + rulestr)
@@ -54,22 +54,26 @@ def parsereq(req):
             res = (do[0], tmpp, "Location") #switch this back to correct order
         return res, (dur, timeMethod, tmp)
         
-def parsecond(cond):
+def parsecond(conditions):
     '''
         For the conditions, the 'AFTER' key word is meaning less, just need to look out for 'FOR'
         return similar result to parsereq
     '''
-    try:
-        attr, device, value = re.findall(r'(^.*)(?= OF )|((?<= OF ).*)(?= IS )|((?<= IS ).*)', cond)
-        res = (attr[0], device[1], value[2])
-    except:
-        mode = re.findall(r'(?=LOCATION MODE IS )|((?<=LOCATION MODE IS ).*)', cond)
-        res = ("mode", "Location", mode[1])
-    try:
-        dev, rr = res[2].split(' FOR ')
-        res = (res[0], res[1], dev)
-    except:
-        return res, None
-    else:
-        dur, timeMethod = rr.split(' ')
-        return res, (dur, timeMethod, "FOR")
+    condlist = conditions.split(' OR ')
+    reslist = []
+    for cond in condlist:
+        try:
+            attr, device, value = re.findall(r'(^.*)(?= OF )|((?<= OF ).*)(?= IS )|((?<= IS ).*)', cond)
+            res = (attr[0], device[1], value[2])
+        except:
+            mode = re.findall(r'(?=LOCATION MODE IS )|((?<=LOCATION MODE IS ).*)', cond)
+            res = ("mode", "Location", mode[1])
+        try:
+            dev, rr = res[2].split(' FOR ')
+            res = (res[0], res[1], dev)
+        except:
+            reslist.append((res, None))
+        else:
+            dur, timeMethod = rr.split(' ')
+            reslist.append((res, (dur, timeMethod, "FOR")))
+    return reslist
