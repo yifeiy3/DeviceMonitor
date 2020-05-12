@@ -1,5 +1,5 @@
 # DeviceMonitor
-Simple device monitor for Samsung SmartThings to check for anomalous behaviors at runtime
+Simple device monitor for Samsung SmartThings to check for anomalous behaviors at runtime. For implementation details, visit `Samsung Smartthings Monitor.pdf` in this repository.
 
 ## Requirements
 
