@@ -87,6 +87,7 @@ class Rules():
         self.dodict = {} #map device to attribute, attribute to value, value to all the conflicts.
         self.dontdict = {}
         self.tempdict = {} #A temporary dictionary used ot help handling dodict business. 
+        self.errmeg = []
         
     def _initializeState(self, items):
         deviceD = {}
@@ -141,18 +142,24 @@ class Rules():
         '''
             return true if condition met, tc is time constraint
         '''
-        if flag:
-            if devi == "Location":
-                return self.mode != None and (val == self.mode[0] and self.mode[1] <= tc) 
-                #The state change happens before the time, valid for 'FOR' conditon
+        try:
+            if flag:
+                if devi == "Location":
+                    return self.mode != None and (val == self.mode[0] and self.mode[1] <= tc) 
+                    #The state change happens before the time, valid for 'FOR' conditon
+                else:
+                    return (val == self.deviceState[devi][attri][0] and self.deviceState[devi][attri][1] <= tc)
             else:
-                return (val == self.deviceState[devi][attri][0] and self.deviceState[devi][attri][1] <= tc)
-        else:
-            if devi == "Location":
-                return self.mode != None and (val == self.mode[0])
-            else:
-                return (val == self.deviceState[devi][attri][0])
-    
+                if devi == "Location":
+                    return self.mode != None and (val == self.mode[0])
+                else:
+                    return (val == self.deviceState[devi][attri][0])
+        except KeyError as e: #case where we do not know the device state yet.
+            errmsg = "We do not yet know the attribute {0} of device {1}, assumed no error there. Keyerror thrown: {2}".format(attri, devi, e)
+            self.errmeg.append(errmsg)
+            return False #not a valid condition since we dont care about it 
+
+
     def checkWithinTime(self, attri, devi, val, timereq, date, timecond):
         '''
             Perform the same check as check valid condition, but also need to make sure 
@@ -168,8 +175,13 @@ class Rules():
             dstate = self.mode
             lastmod = dstate[1]
         else:
-            dstate = self.deviceState[devi][attri]
-            lastmod = dstate[1]
+            try:
+                dstate = self.deviceState[devi][attri]
+                lastmod = dstate[1]
+            except KeyError as e:#case where we do not know the device state yet.
+                errmsg = "We do not yet know the attribute {0} of device {1}, assumed no error there. Keyerror thrown: {2}".format(attri, devi, e)
+                self.errmeg.append(errmsg)
+                return (False, False) #use false here since true means the dont condition is violated.
         f, offset = calculateOffset(date, timecond, backwards=True) #all the condition are satisfied w.r.t to their durations
         lf, sffset = calculateOffset(lastmod, timecond) #add back the time frame needed for all the conditions
         if lf:
@@ -203,6 +215,8 @@ class Rules():
         '''
             For the devices we could not infer states (The states are set way before and we can not obtain log),
             we assume such device conditions do not violate any rules.
+            if such device states happens to be in one of the rules, we omit the message, and such event can be found when
+            ran with the debug flag.
         '''
         dontVio = [] #violation for don't rules
         doVio = [] #violation for do rules
@@ -223,19 +237,17 @@ class Rules():
                         for method, de in confs[0]:
                             try:
                                 docond = self.dodict[de][method]
-                                #print("docond: {0}".format(docond))
                             except:
                                 continue
                             else:
                                 for ittt in docond:
                                     flag = True
                                     theconstraints = ittt[0]
-                                    #print("theconstraints: {0}".format(theconstraints))
                                     timess = ittt[1]
                                     condMet = []
                                     for things in theconstraints:
                                         flagOr = False
-                                        for i in range(len(things)): #check if any or constraint is satisfied
+                                        for i in range(len(things)): #check if any "or" constraint is satisfied
                                             a, d, v = things[i][0]
                                             timecons = things[i][1]
                                             f, doff = calculateOffset(date, timecons, backwards=True) #(whether we have time constraint, the offset)
@@ -247,8 +259,6 @@ class Rules():
                                     if flag: 
                                         #all conditions for the do rule is satisfied
                                         #need to check if do rule is executed within a very brief time frame.
-                                        # print(len(theconstraints))
-                                        # print("length of condMet: {0}, condMet: {1}".format(len(condMet), condMet))
                                         j = i+1
                                         changed = False
                                         _t, dateoffset = calculateOffset(date, timess) #convert time input to the correct seconds offset
@@ -268,7 +278,6 @@ class Rules():
                                                 break                                    
                                             j = j+1
                                         if not changed:
-                                            #print("huh condmet: {0}".format(condMet))
                                             doVio.append((method, de, theconstraints, timess, condMet))
 
             if cmd == 'APP_COMMAND' or cmd == 'LOCATION_MODE':
@@ -277,7 +286,6 @@ class Rules():
                 except: #There is no rule about this event
                     continue
                 else:
-                    # print("conffs : {0}".format(conffs))
                     for con, ttcons in conffs:
                         flagp = True
                         anyp = False
@@ -298,9 +306,6 @@ class Rules():
                             conddMet.append(curr)
                             flagp = flagp and flagOrP
                         if flagp and anyp:
-                            # print("con: {0}".format(con))
-                            # print("ttcons: {0}".format(ttcons))
-                            # print("conddMet: {0}".format(conddMet))
                             if name:
                                 dontVio.append((name, tobj, val, con, ttcons, conddMet))
                                 #(appname that violated the rule, attributeState, device, value, description of the rule)
@@ -362,4 +367,6 @@ class Rules():
                         out.write(" for " + timeccs[0] + " " + timeccs[1] + "\n")
                     else:
                         out.write("\n")
-                    
+            out.write("\n\nDuring the rule analysis, we encountered the following errors, and we assumed no rules are violated from these: \n")
+            for errs in list(set(self.errmeg)):
+                out.write("\t{0} \n".format(errs))

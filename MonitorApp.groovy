@@ -66,6 +66,11 @@ preferences {
         title: "Motion",
         multiple: true,
         required: false
+    input "sensorsPresence",
+    	"capability.presenceSensor",
+        title: "Presence",
+        multiple: true,
+        required: false
   }
   section ("Thermostat access") {
     input "thermostats",
@@ -145,6 +150,7 @@ def getThings(kind){
             things += sensorsPower      ?: []
             things += sensorsIlluminance?: []
             things += sensorsMotion     ?: []
+            things += sensorsPresence   ?: []
             things += thermostats       ?: []
             things += switches          ?: []
             things += switchesLevel     ?: []
@@ -174,6 +180,8 @@ def getThings(kind){
             return sensorsIlluminance?: []
         case "motion":
             return sensorsMotion     ?: []
+        case "presence":
+        	return sensorsPresence   ?: []
         case "thermostat":
             return thermostats       ?: []
         case "switch":

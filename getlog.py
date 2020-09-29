@@ -18,7 +18,7 @@ else:
     print(since)
 
 An = Analysis(API_KEY, ENDPOINT, important = IMPORTANT)
-An.analyze(log_output, since)
+An.analyze(log_output, since, debug=True)
 if rule_input:
     print("rule file:" + rule_input)
     Ru = Rules(rule_input, An.mevents, An.allevts, An.items)
