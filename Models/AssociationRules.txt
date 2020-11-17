@@ -1,0 +1,7 @@
+0: 
+	 Conditions: 
+		Thermostat_80_80_1
+		Door_OPEN_LOCKED_0
+	 Consequence: 
+		Person_Home_Away_0
+	 Confidence: 1.0 Lift: 18.974683544303797
