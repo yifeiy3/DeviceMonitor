@@ -1,0 +1,6 @@
+,Thermostat,Smoke_Alarm,Light A,Light B,Door,Person
+0,83,OFF,OFF,ON,OPEN,Home
+1,83,OFF,OFF,ON,OPEN,Home
+2,84,OFF,OFF,ON,LOCKED,Away
+3,83,OFF,ON,ON,LOCKED,Away
+4,82,OFF,ON,ON,LOCKED,Home

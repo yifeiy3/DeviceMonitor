@@ -1,0 +1,5 @@
+Predicted Behavior: Person_Away_Away0
+Actual Behavior: Person_Home_Away1
+Under Conditions: 
+	['Thermostat_65_5' 'Smoke_Alarm_OFF_5' 'Light A_ON_5' 'Light B_ON_5'
+ 'Door_LOCKED_5']
